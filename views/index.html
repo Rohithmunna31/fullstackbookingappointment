@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking apointment application</title>
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <h1>Booking Appointment app</h1>
+    <form action="/user/adduser">
+      <label for="name"> Name </label>
+      <input type="text" id="name" name="name" value="name" />
+      <br />
+      <br />
+
+      <label for="mobileno"> Phone number </label>
+      <input type="number" id="mobileno" name="mobileno" value="10000" />
+
+      <br />
+      <br />
+
+      <label for="email"> Email </label>
+      <input type="email" id="email" name="email" value="email@gmail.com" />
+
+      <br />
+      <br />
+
+      <button type="submit" id="submit">Submit</button>
+    </form>
+
+    <p id="p"></p>
+
+    <script type="text/javascript">
+      const btn = document.getElementById("submit");
+
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const moibleno = document.getElementById("mobileno").value;
+        const email = document.getElementById("email").value;
+
+        const obj = {
+          name,
+          moibleno,
+          email,
+        };
+
+        axios
+          .post("http://localhost:3000/user/adduser", {
+            name: name,
+            mobileno: mobileno,
+            email: email,
+          })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
+
+      });
+
+      function deleteuser(id){
+
+        axios.delete('http://localhost:3000/user/delete-user/{id}')
+        .then((res)=>{
+          removeuserfromscreen(id);
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
+      }
+      function removeuserfromscreen(userid){
+          const parentNode = document.getElementById('userlist');
+          const childNode = document.getElementById(userid);
+
+          if(childNode){
+              parentNode.removeChild(childNode);
+          }
+
+      }
+
+      window.addEventListener("DOMContentLoader", () => {
+        axios
+          .get("http://localhost:3000/user/get-user")
+          .then((res) => {
+            console.log(res);
+
+            for (let i = 0; i < res.data.allUsers.length; i++) {
+              showUser(res.data.allUsers[i]);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
+
+      });
+
+      function showUser(arr){
+          const p = document.getElementById('p');
+
+          const dlt = document.createElement('button');
+          dlt.innerText = 'delete';
+        
+          const edit = document.createElement('button');
+          edit.innerText = 'edit';
+
+          p.innerText = arr;
+
+          p.appendChild(dlt);
+          p.appendChild(edit);
+
+
+      }
+    </script>
+  </body>
+</html>
